@@ -1,0 +1,52 @@
+// script.js
+document.addEventListener("DOMContentLoaded", function() {
+    const dateSection = document.getElementById("dateSection");
+    const notlar = document.getElementById("notlar");
+    const searchBar = document.getElementById("searchBar");
+    const pagePreviews = document.getElementById("pagePreviews");
+
+    // Tüm Günleri Oluştur (1 Ocak 2024'ten başlayarak)
+    const startDate = new Date(2024, 0, 1);
+    const totalDays = 365; // 2024 yılı için gün sayısı
+
+    for (let i = 0; i < totalDays; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        const options = { month: 'short', day: 'numeric' };
+        const previewText = currentDate.toLocaleDateString('tr-TR', options);
+
+        const pagePreview = document.createElement("div");
+        pagePreview.className = "page-preview";
+        pagePreview.innerText = previewText;
+
+        // Sayfa Geçişi için Event Listener
+        pagePreview.addEventListener("click", function() {
+            displayDate(currentDate);
+        });
+
+        pagePreviews.appendChild(pagePreview);
+    }
+
+    // Tarihi Göster ve Not Sayfasını Güncelle
+    function displayDate(date) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        dateSection.innerText = date.toLocaleDateString('tr-TR', options);
+        notlar.value = ""; // Yeni tarih için boş not sayfası
+    }
+
+    // Arama Özelliği
+    searchBar.addEventListener("input", function() {
+        const searchTerm = searchBar.value;
+        const text = notlar.value;
+
+        if (searchTerm) {
+            const regex = new RegExp(`(${searchTerm})`, "gi");
+            notlar.innerHTML = text.replace(regex, '<mark>$1</mark>');
+        } else {
+            notlar.innerHTML = text;
+        }
+    });
+
+    // İlk Tarihi Göster
+    displayDate(startDate);
+});
